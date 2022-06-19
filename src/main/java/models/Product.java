@@ -2,11 +2,13 @@ package models;
 
 public class Product {
     private String id;
-    private String descricao;
-    private double preco;
+    private String description;
+    private double price;
 
-    public Product(String id, String descricao, double preco) {
-
+    public Product(String id, String descricao, double price) {
+        this.id = id;
+        this.description = description;
+        this.price = price;
     }
 
     public String getId() {
@@ -17,19 +19,19 @@ public class Product {
         this.id = id;
     }
 
-    public String getDescricao() {
-        return descricao;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public double getPreco() {
-        return preco;
+    public double getPrice() {
+        return price;
     }
 
-    public void setPreco(double preco) {
-        this.preco = preco;
+    public void setPrice(double price) {
+        this.price = price;
     }
 }
