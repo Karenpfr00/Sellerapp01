@@ -13,7 +13,7 @@ public class CustomerDB {
         String query = "SELECT * FROM customers;";
 
         try {
-            Connection connection = Configuration.getConnection("jdbc:mysql://localhost/sellerapp");
+            Connection connection = Configuration.getConnection();
 
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
@@ -39,7 +39,7 @@ public class CustomerDB {
         String query = "SELECT * FROM customers WHERE id = ?";
 
         try {
-            Connection connection = Configuration.getConnection("jdbc:mysql://localhost/sellerapp");
+            Connection connection = Configuration.getConnection();
 
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, customerId);

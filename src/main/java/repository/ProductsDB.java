@@ -14,11 +14,11 @@ public class ProductsDB {
     }
 
     public void addProduct(Product product) {
-        String query = "INSERT INTO product(id, descricao, preco) VALUES (\"" + products.getId() + "\",\"" + products.getDescription()+ "\"," + products.getPrice() + ");";
+        String query = "INSERT INTO product(id, description, price) VALUES (?, ?, ?);";
 
 
         try {
-            Connection connection = Configuration.getConnection("jdbc:mysql://localhost/sellerapp" , "root" , "Konohamaru@101" );
+            Connection connection = Configuration.getConnection();
             PreparedStatement statement = connection.prepareStatement(query);
 
             statement.setString(1, product.getId());
@@ -32,10 +32,10 @@ public class ProductsDB {
     }
 
     public Product getProductById(String productId) {
-        String query = "INSERT INTO product(id, descricao, preco) VALUES (\"" + products.getId() + "\",\"" + products.getDescription()+ "\"," + products.getPrice() + ");";
+        String query = "INSERT INTO product(id, description, price) VALUES (?, ?, ?);";
 
         try {
-            Connection connection = Configuration.getConnection("jdbc:mysql://localhost/sellerapp" , "root" , "Konohamaru@101" );
+            Connection connection = Configuration.getConnection();
 
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, productId);
@@ -60,10 +60,10 @@ public class ProductsDB {
     public List<Product> getProduct() {
         List<Product> persistedProducts = new ArrayList<>();
 
-        String query = "SELECT * FROM products;";
+        String query = "SELECT * FROM product;";
 
         try {
-            Connection connection = Configuration.getConnection("jdbc:mysql://localhost/sellerapp");
+            Connection connection = Configuration.getConnection();
 
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
