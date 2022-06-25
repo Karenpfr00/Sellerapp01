@@ -63,10 +63,10 @@ public class CustomerDB {
     }
 
     public void addCustomer(Customer customer) {
-        String query = "INSERT INTO customers(id, first_name, last_name, address, phone_number) VALUES (\" " + customer.getFirstName() + "\",\"" + customer.getLastName() + "\",\"" + customer.getAddress() + "\",\"" + customer.getPhoneNumber() + ");";
+        String query = "INSERT INTO customers(id, first_name, last_name, address, phone_number) VALUES (?,?,?,?,?)";
 
         try {
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost/sellerapp" , "root" , "Konohamaru@101" );
+            Connection connection = Configuration.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(query);
 
             preparedStatement.setString(1, customer.getId());
