@@ -5,18 +5,21 @@ import java.util.List;
 import java.util.Scanner;
 
 import models.Customer;
+import models.Order;
 import models.Supplier;
+import models.Product;
 import reports.CSVExporter;
 import repository.Configuration;
 import repository.CustomerDB;
 import repository.ProductsDB;
-import models.Product;
+import repository.OrderDB;
 import repository.SupplierDB;
 
 public class SellerApp {
     static ProductsDB productsDb = new ProductsDB();
     static SupplierDB supplierDB = new SupplierDB();
     static CustomerDB customerDB = new CustomerDB();
+    static OrderDB orderDB = new OrderDB();
 
 
     public static void main(String... args) {
@@ -34,6 +37,8 @@ public class SellerApp {
                 System.out.println("6 - Listar todos os clientes cadastrados");
                 System.out.println("7 - Buscar cliente");
                 System.out.println("8 - Exportar dados de produtos");
+                System.out.println("9 - Pedido de Venda");
+                System.out.println("10 - Listar Pedidos de Vendas");
                 System.out.println("0 - Sair do programa");
 
                 System.out.println("Escolha uma operação: ");
@@ -194,6 +199,47 @@ public class SellerApp {
                 }
 
                 break;
+            }
+            case 9:{
+                System.out.println("Pedido de Venda");
+
+                Scanner scanner = new Scanner(System.in);
+
+                System.out.print("Informe o ID do pedido: ");
+                String id = scanner.nextLine();
+
+                System.out.print("Informe o ID do produto: ");
+                String productId = scanner.nextLine();
+
+                System.out.print("Informe o ID do cliente: ");
+                String customerId = scanner.nextLine();
+
+                System.out.println("Informe a quantidade: ");
+                int quantity = scanner.nextInt();
+
+                Customer customer = customerDB.getCustomerById(customerId);
+                Product product = productsDb.getProductById(productId);
+
+                Order order = new Order(id, customer,product, quantity);
+
+                break;
+            }
+
+            case 10: {
+                System.out.println("Listando Pedidos de Vendas");
+
+                List<Order> orders = orderDB.getAllOrders();
+
+                for (Order order : orders) {
+                    System.out.println("----------------------------------------------------------------------");
+                    System.out.println("ID: " + order.getId() +
+                            " - Produto: " + order.getProduct().getDescription() +
+                            " - Cliente: " + order.getCustomer().getFirstName() + " " + order.getCustomer().getLastName() +
+                            " - Quantidade: " + order.getQuantity());
+                    System.out.println("----------------------------------------------------------------------");
+
+                }
+
             }
         }
     }
