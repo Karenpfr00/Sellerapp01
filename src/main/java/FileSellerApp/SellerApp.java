@@ -1,33 +1,29 @@
 package FileSellerApp;
-
-import java.io.IOException;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
-
-import models.Customer;
-import models.Order;
-import models.Supplier;
-import models.Product;
-import reports.CSVExporter;
+import UI.*;
 import repository.Configuration;
-import repository.CustomerDB;
-import repository.ProductsDB;
-import repository.OrderDB;
-import repository.SupplierDB;
 
 public class SellerApp {
-    static ProductsDB productsDb = new ProductsDB();
-    static SupplierDB supplierDB = new SupplierDB();
-    static CustomerDB customerDB = new CustomerDB();
-    static OrderDB orderDB = new OrderDB();
-
-
     public static void main(String... args) {
               System.out.println("Boas Vindas ao Seller App");
 
             int option;
 
-            do {
+        Map<Integer, IUserInterface> optionIUserInterfaces = new HashMap<>();
+        optionIUserInterfaces.put(1, new CreateProductUI());
+        optionIUserInterfaces.put(2, new ListProductUI());
+        optionIUserInterfaces.put(3,new FindProductUI());
+        optionIUserInterfaces.put(4, new CreatSupplierUI());
+        optionIUserInterfaces.put(5, new CreateCustomerUI());
+        optionIUserInterfaces.put(6, new ListCustomerUI());
+        optionIUserInterfaces.put(7, new FindCustumerUI());
+        optionIUserInterfaces.put(8,new ExportProductsUI());
+        optionIUserInterfaces.put(9, new CreateOrderUI());
+        optionIUserInterfaces.put(10, new ListOrderUI());
+
+        do {
                 System.out.println("-------MENU PRINCIPAL--------");
                 System.out.println("1 - Cadastrar um novo produto");
                 System.out.println("2 - Listar todos os produtos cadastrados");
@@ -45,202 +41,13 @@ public class SellerApp {
                 Scanner scanner = new Scanner(System.in);
                 option = scanner.nextInt();
 
-                process(option);
-            } while (option != 0);
-
-            Configuration.closeConnection();
-
-    }
-
-    static void process(int option){
-        switch (option){
-            case 1:{
-                Scanner scanner = new Scanner(System.in);
-
-                System.out.println("Informe a descrição do produto: ");
-                String description = scanner.nextLine();
-
-                System.out.println("Informe um ID do produto: ");
-                String id = scanner.nextLine();
-
-                System.out.println("Informe o preço: ");
-                double price = scanner.nextDouble();
-
-                Product newProduct = new Product(id,description,price);
-                productsDb.addProduct(newProduct);
-
-                break;
-            }
-
-            case 2: {
-                System.out.println("---------------LISTANDO PRODUTOS---------");
-                for(Product product : productsDb.getProduct()){
-                    System.out.println("ID: " + product.getId());
-                    System.out.println("Descrição: " + product.getDescription());
-                    System.out.println("Preço: " + product.getPrice());
-                    System.out.println("-------------------------------------");
-
+                if (option != 0) {
+                    IUserInterface ui = optionIUserInterfaces.get(option);
+                    ui.show();
                 }
-                break;
-            }
+        } while (option != 0);
 
-            case 3: {
-                System.out.println("-------OBTENDO DADOS DE PRODUTO--------");
-                Scanner scanner = new Scanner(System.in);
+        Configuration.closeConnection();
 
-                System.out.print("Informe um ID do produto: ");
-                String id = scanner.nextLine();
-
-                Product product = productsDb.getProductById(id);
-
-                System.out.println("ID: " + product.getId());
-                System.out.println("Descrição: " + product.getDescription());
-                System.out.println("Preço: " + product.getPrice());
-                System.out.println("-----------------------------------------");
-
-                break;
-            }
-
-            case 4: {
-                System.out.println("-------CRIANDO NOVO FORNECEDOR-------");
-
-                Scanner scanner = new Scanner(System.in);
-
-                System.out.print("Informe o ID do fornecedor: ");
-                String id = scanner.nextLine();
-
-                System.out.print("Informe o nome: ");
-                String nome = scanner.nextLine();
-
-                System.out.print("Agora informe o telefone: ");
-                String phoneNumber = scanner.nextLine();
-
-                Supplier supplier = new Supplier(id, nome, phoneNumber);
-                supplierDB.addSupplier(supplier);
-
-                break;
-            }
-
-            case 5: {
-                System.out.println("-------CRIANDO NOVO CLIENTE-------");
-
-                Scanner scanner = new Scanner(System.in);
-
-                System.out.print("Informe o identificador do cliente: ");
-                String id = scanner.nextLine();
-
-                System.out.print("Informe o primeiro nome do cliente: ");
-                String firstName = scanner.nextLine();
-
-                System.out.print("Informe o último nome: ");
-                String lastName = scanner.nextLine();
-
-                System.out.print("Informe o endereço (até 100 caracteres): ");
-                String address = scanner.nextLine();
-
-                System.out.print("Informe o telefone de contato: ");
-                String phoneNumber = scanner.nextLine();
-
-                Customer customer = new Customer(id, firstName, lastName, address, phoneNumber);
-
-                customerDB.addCustomer(customer);
-
-                break;
-            }
-
-            case 6: {
-                List<Customer> customers = customerDB.getCustomers();
-
-                System.out.println("------LISTANDO CLIENTES CADASTRADOS------");
-                for (Customer customer :  customers) {
-                    System.out.println("ID: " + customer.getId() +
-                            "\t - Nome: " + customer.getFirstName() + " " + customer.getLastName() +
-                            "\t - Endereço: " + customer.getAddress() +
-                            "\t - Telefone: " + customer.getPhoneNumber());
-                }
-
-                break;
-            }
-
-            case 7: {
-                System.out.println("-------OBTENDO DADOS DE CLIENTE--------");
-                Scanner scanner = new Scanner(System.in);
-
-                System.out.print("Informe o ID do cliente: ");
-                String id = scanner.nextLine();
-
-                Customer customer = customerDB.getCustomerById(id);
-
-                if (customer != null) {
-                    System.out.println("Primeiro nome: " + customer.getFirstName());
-                    System.out.println("Último nome: " +  customer.getLastName());
-                    System.out.println("Endereço: " +  customer.getAddress());
-                    System.out.println("Telefone de contato: " + customer.getPhoneNumber());
-                } else {
-                    System.out.println("Cliente não encontrado!");
-                }
-
-                break;
-            }
-
-            case 8: {
-                System.out.println("Exportando dados de produtos...");
-                Scanner scanner = new Scanner(System.in);
-
-                System.out.print("Para onde você deseja exportar o arquivo: ");
-                String path = scanner.nextLine();
-
-                List<Product> products = productsDb.getProduct();
-
-                try {
-                    CSVExporter.export(path, products);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                break;
-            }
-            case 9:{
-                System.out.println("Pedido de Venda");
-
-                Scanner scanner = new Scanner(System.in);
-
-                System.out.print("Informe o ID do pedido: ");
-                String id = scanner.nextLine();
-
-                System.out.print("Informe o ID do produto: ");
-                String productId = scanner.nextLine();
-
-                System.out.print("Informe o ID do cliente: ");
-                String customerId = scanner.nextLine();
-
-                System.out.println("Informe a quantidade: ");
-                int quantity = scanner.nextInt();
-
-                Customer customer = customerDB.getCustomerById(customerId);
-                Product product = productsDb.getProductById(productId);
-
-                Order order = new Order(id, customer,product, quantity);
-
-                break;
-            }
-
-            case 10: {
-                System.out.println("Listando Pedidos de Vendas");
-
-                List<Order> orders = orderDB.getAllOrders();
-
-                for (Order order : orders) {
-                    System.out.println("----------------------------------------------------------------------");
-                    System.out.println("ID: " + order.getId() +
-                            " - Produto: " + order.getProduct().getDescription() +
-                            " - Cliente: " + order.getCustomer().getFirstName() + " " + order.getCustomer().getLastName() +
-                            " - Quantidade: " + order.getQuantity());
-                    System.out.println("----------------------------------------------------------------------");
-
-                }
-
-            }
-        }
     }
 }
